@@ -89,8 +89,9 @@ const handlers: Handlers = {
     const saved = await send({ type: "download", cooklang, filename });
     if (!saved) {
       // No downloads API (Safari): save through a link from the popup itself.
+      // octet-stream, not text/plain, so the browser keeps the .cook extension.
       const link = document.createElement("a");
-      link.href = URL.createObjectURL(new Blob([cooklang], { type: "text/plain" }));
+      link.href = URL.createObjectURL(new Blob([cooklang], { type: "application/octet-stream" }));
       link.download = filename;
       link.click();
     }
