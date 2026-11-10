@@ -3,6 +3,7 @@ import type { Extraction } from "@cooklang/cooklang-import";
 import { requestCode, verifyCode } from "../../lib/api";
 import { clearSession, getPendingCode, getSession, onSessionChange, saveSession, setPendingCode, type PendingSignIn, type Session } from "../../lib/auth";
 import { extract } from "../../lib/extractor";
+import { ACCESS_NEEDED, createHostAccess } from "../../lib/host-access";
 import { clearJob, getJob, onJobChange, setJob, type Job } from "../../lib/jobs";
 import type { Message } from "../../lib/messages";
 import { readPage, type PageSnapshot } from "../../lib/page-reader";
@@ -69,6 +70,19 @@ async function signInRequest(notice: string, work: () => Promise<void>): Promise
   }
 }
 
+/**
+ * Run `action`, which talks to cook.md, once the extension may. Call it
+ * synchronously from the click or submit handler: when access is missing (Safari,
+ * until the person allows cook.md) the browser's prompt needs the user gesture.
+ */
+const hostAccess = createHostAccess(browser.permissions);
+function withHostAccess(action: () => void): void {
+  hostAccess.run(action, () => {
+    state.notice = ACCESS_NEEDED;
+    render();
+  });
+}
+
 const UNREACHABLE_WORKER = "Couldn't reach the extension's background process. Try again.";
 
 /** Forget this tab's job and show the page view again ("Try again", "Clip again"). */
@@ -93,16 +107,19 @@ const handlers: Handlers = {
       return;
     }
 
-    // Show "Converting…" at once, so the button is gone before a second click can
-    // land. The worker writes the same job to session storage, then the outcome;
-    // onJobChange re-renders.
-    const local: Job = { status: "converting", pageUrl: request.pageUrl, filename: request.filename, startedAt: Date.now() };
-    state.job = local;
-    render();
-    send({ type: "clip", request }).catch(() => {
-      if (state.job === local) state.job = null; // the worker never took it
-      state.notice = UNREACHABLE_WORKER;
+    withHostAccess(() => {
+      // Show "Converting…" at once, so the button is gone before a second click can
+      // land. The worker writes the same job to session storage, then the outcome;
+      // onJobChange re-renders.
+      const local: Job = { status: "converting", pageUrl: request.pageUrl, filename: request.filename, startedAt: Date.now() };
+      state.job = local;
+      state.notice = "";
       render();
+      send({ type: "clip", request }).catch(() => {
+        if (state.job === local) state.job = null; // the worker never took it
+        state.notice = UNREACHABLE_WORKER;
+        render();
+      });
     });
   },
 
@@ -143,49 +160,55 @@ const handlers: Handlers = {
   },
 
   submitEmail(email) {
-    void signInRequest("Sending the code…", async () => {
-      const result = await requestCode(email);
-      if (state.pending?.step !== "email") return; // cancelled while the request was out
-      if (result.kind === "sent") await setPending({ step: "code", email, requestedAt: Date.now() });
-      else {
-        state.notice = result.message;
-        render();
-      }
+    withHostAccess(() => {
+      void signInRequest("Sending the code…", async () => {
+        const result = await requestCode(email);
+        if (state.pending?.step !== "email") return; // cancelled while the request was out
+        if (result.kind === "sent") await setPending({ step: "code", email, requestedAt: Date.now() });
+        else {
+          state.notice = result.message;
+          render();
+        }
+      });
     });
   },
 
   submitCode(code) {
     if (state.pending?.step !== "code") return;
     const { email } = state.pending;
-    void signInRequest("Signing in…", async () => {
-      const result = await verifyCode(email, code);
-      if (result.kind !== "ok") {
-        state.notice = result.message;
-        render();
-        return;
-      }
-      state.session = { token: result.token, email };
-      await saveSession(state.session);
-      // A rate-limit wall from before sign-in no longer applies.
-      if (state.job?.status === "rate_limited" && state.tabId !== undefined) {
-        await clearJob(state.tabId);
-        state.job = null;
-      }
-      await setPending(null);
+    withHostAccess(() => {
+      void signInRequest("Signing in…", async () => {
+        const result = await verifyCode(email, code);
+        if (result.kind !== "ok") {
+          state.notice = result.message;
+          render();
+          return;
+        }
+        state.session = { token: result.token, email };
+        await saveSession(state.session);
+        // A rate-limit wall from before sign-in no longer applies.
+        if (state.job?.status === "rate_limited" && state.tabId !== undefined) {
+          await clearJob(state.tabId);
+          state.job = null;
+        }
+        await setPending(null);
+      });
     });
   },
 
   resendCode() {
     if (state.pending?.step !== "code") return;
     const { email } = state.pending;
-    void signInRequest("Sending the code…", async () => {
-      const result = await requestCode(email);
-      if (state.pending?.step !== "code" || state.pending.email !== email) return; // left the step meanwhile
-      if (result.kind === "sent") await setPending({ step: "code", email, requestedAt: Date.now() }, "Code sent.");
-      else {
-        state.notice = result.message;
-        render();
-      }
+    withHostAccess(() => {
+      void signInRequest("Sending the code…", async () => {
+        const result = await requestCode(email);
+        if (state.pending?.step !== "code" || state.pending.email !== email) return; // left the step meanwhile
+        if (result.kind === "sent") await setPending({ step: "code", email, requestedAt: Date.now() }, "Code sent.");
+        else {
+          state.notice = result.message;
+          render();
+        }
+      });
     });
   },
 
@@ -235,6 +258,9 @@ async function checkInterrupted(tabId: number): Promise<void> {
 
 async function start(): Promise<void> {
   render(); // "Reading the page…"
+  // Not awaited: it only has to answer before the first click, and a click that
+  // beats it asks the browser directly.
+  void hostAccess.refresh();
 
   const [session, pendingCode] = await Promise.all([getSession(), getPendingCode()]);
   state.session = session;
