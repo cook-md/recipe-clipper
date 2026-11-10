@@ -56,6 +56,16 @@ describe("runClip", () => {
     ]);
   });
 
+  it("sends the source URL without its #fragment but keeps the job on the exact page URL", async () => {
+    const { deps, jobs } = fakes();
+    const pageUrl = "https://example.com/r?id=7#step-3";
+
+    await runClip({ ...request, pageUrl }, deps);
+
+    expect(deps.convert.mock.calls[0]![0].sourceUrl).toBe("https://example.com/r?id=7");
+    expect(jobs.map((job) => job.pageUrl)).toEqual([pageUrl, pageUrl]);
+  });
+
   it("sends the session token when signed in", async () => {
     const { deps } = fakes([ok], { token: VALID, email: "a@example.com" });
     await runClip(request, deps);

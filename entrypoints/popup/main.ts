@@ -3,10 +3,10 @@ import type { Extraction } from "@cooklang/cooklang-import";
 import { requestCode, verifyCode } from "../../lib/api";
 import { clearSession, getPendingCode, getSession, onSessionChange, saveSession, setPendingCode, type PendingSignIn, type Session } from "../../lib/auth";
 import { extract } from "../../lib/extractor";
-import { cookFilename } from "../../lib/filename";
 import { clearJob, getJob, onJobChange, setJob, type Job } from "../../lib/jobs";
-import type { ClipRequest, Message } from "../../lib/messages";
+import type { Message } from "../../lib/messages";
 import { readPage, type PageSnapshot } from "../../lib/page-reader";
+import { clipRequestFor } from "../../lib/request";
 import { pendingCodeExpired, viewFor, type View } from "../../lib/view";
 import { renderFooter, renderView, type Handlers } from "./render";
 
@@ -69,43 +69,62 @@ async function signInRequest(notice: string, work: () => Promise<void>): Promise
   }
 }
 
+const UNREACHABLE_WORKER = "Couldn't reach the extension's background process. Try again.";
+
+/** Forget this tab's job and show the page view again ("Try again", "Clip again"). */
+async function backToPage(): Promise<void> {
+  if (state.tabId !== undefined) await clearJob(state.tabId);
+  state.job = null;
+  state.notice = "";
+  render();
+}
+
 const handlers: Handlers = {
   convert() {
     const { tabId, snapshot, extraction } = state;
-    if (tabId === undefined || !snapshot) return;
-
-    const request: ClipRequest = extraction
-      ? {
-          tabId,
-          pageUrl: snapshot.url,
-          filename: cookFilename(extraction.recipe.name),
-          text: extraction.components.text,
-          extracted: { name: extraction.components.name, metadata: extraction.components.metadata },
-        }
-      : {
-          tabId,
-          pageUrl: snapshot.url,
-          filename: cookFilename(snapshot.title),
-          text: snapshot.selection || snapshot.text,
-        };
+    if (tabId === undefined || !snapshot || extraction === undefined) return;
 
     state.notice = "";
+    const request = clipRequestFor(tabId, snapshot, extraction);
+    if (!request) {
+      // Nothing to send: say so here instead of asking the server.
+      state.job = { status: "error", pageUrl: snapshot.url, message: "There's no text on this page to convert." };
+      render();
+      return;
+    }
+
     // Show "Converting…" at once, so the button is gone before a second click can
     // land. The worker writes the same job to session storage, then the outcome;
     // onJobChange re-renders.
-    state.job = { status: "converting", pageUrl: request.pageUrl, filename: request.filename, startedAt: Date.now() };
+    const local: Job = { status: "converting", pageUrl: request.pageUrl, filename: request.filename, startedAt: Date.now() };
+    state.job = local;
     render();
-    void send({ type: "clip", request });
+    send({ type: "clip", request }).catch(() => {
+      if (state.job === local) state.job = null; // the worker never took it
+      state.notice = UNREACHABLE_WORKER;
+      render();
+    });
   },
 
   async copy(cooklang) {
-    await navigator.clipboard.writeText(cooklang);
-    state.notice = "Copied.";
+    try {
+      await navigator.clipboard.writeText(cooklang);
+      state.notice = "Copied.";
+    } catch {
+      state.notice = "Couldn't copy. Select the text and copy it manually.";
+    }
     render();
   },
 
   async downloadAgain(cooklang, filename) {
-    const saved = await send({ type: "download", cooklang, filename });
+    let saved: unknown;
+    try {
+      saved = await send({ type: "download", cooklang, filename });
+    } catch {
+      state.notice = UNREACHABLE_WORKER;
+      render();
+      return;
+    }
     if (!saved) {
       // No downloads API (Safari): save through a link from the popup itself.
       // octet-stream, not text/plain, so the browser keeps the .cook extension.
@@ -116,12 +135,8 @@ const handlers: Handlers = {
     }
   },
 
-  async retry() {
-    if (state.tabId !== undefined) await clearJob(state.tabId);
-    state.job = null;
-    state.notice = "";
-    render();
-  },
+  retry: backToPage,
+  clipAgain: backToPage,
 
   showSignIn() {
     void setPending({ step: "email" });

@@ -3,6 +3,7 @@ import type { Session } from "./auth";
 import type { Job } from "./jobs";
 import type { ClipRequest } from "./messages";
 import { tokenExpired } from "./token";
+import { withoutFragment } from "./url";
 
 /** Signed in, the limit is about one request a second: a wait this short is worth sitting out once. */
 const SIGNED_IN_MAX_RETRY_SECONDS = 2;
@@ -53,7 +54,8 @@ async function convertAndSave(request: ClipRequest, deps: ClipDeps): Promise<Job
   const { pageUrl, filename } = request;
   const payload: ConvertPayload = {
     text: request.text,
-    sourceUrl: pageUrl,
+    // The job keeps the exact page URL (the popup matches on it); the server gets it without the #fragment.
+    sourceUrl: withoutFragment(pageUrl),
     client: deps.client,
     extracted: request.extracted,
   };

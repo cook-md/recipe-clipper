@@ -6,6 +6,7 @@ export interface Handlers {
   copy(cooklang: string): void;
   downloadAgain(cooklang: string, filename: string): void;
   retry(): void;
+  clipAgain(): void;
   showSignIn(): void;
   submitEmail(email: string): void;
   submitCode(code: string): void;
@@ -134,6 +135,7 @@ export function renderView(root: HTMLElement, view: View, notice: string, handle
           button("Copy", () => handlers.copy(view.cooklang)),
           button(view.downloaded ? "Download again" : "Save .cook", () => handlers.downloadAgain(view.cooklang, view.filename), view.downloaded ? "" : "primary"),
         ),
+        actions(button("Clip again", handlers.clipAgain, "link")),
       );
       break;
 

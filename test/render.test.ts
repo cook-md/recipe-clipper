@@ -81,6 +81,17 @@ describe("renderView, sign-in forms", () => {
   });
 });
 
+describe("renderView, done", () => {
+  it("offers to clip again", () => {
+    const clipAgain = vi.fn();
+    renderView(root, { kind: "done", cooklang: "Roast.", filename: "x.cook", downloaded: true }, "", { ...handlers, clipAgain });
+
+    expect(labels()).toEqual(["Copy", "Download again", "Clip again"]);
+    [...root.querySelectorAll("button")].find((button) => button.textContent === "Clip again")!.click();
+    expect(clipAgain).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe("renderView, page-derived text", () => {
   it("shows markup in recipe fields as text", () => {
     const recipe = { name: "<img src=x onerror=alert(1)>", description: null, image: ["https://example.com/a.jpg"], ingredients: ["<b>2</b> eggs"], instructions: "Boil <i>it</i>.", metadata: {} };
