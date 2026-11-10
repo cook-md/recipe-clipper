@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run zip
+      - run: npm run zip:firefox
+      - uses: actions/upload-artifact@v7
+        with:
+          name: extension-zips
+          path: .output/*.zip
+          # .output is a dot-directory, which upload-artifact skips by default.
+          include-hidden-files: true
