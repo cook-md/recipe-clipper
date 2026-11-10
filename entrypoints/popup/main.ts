@@ -4,6 +4,7 @@ import { requestCode, verifyCode } from "../../lib/api";
 import { clearSession, getPendingCode, getSession, onSessionChange, saveSession, setPendingCode, type PendingSignIn, type Session } from "../../lib/auth";
 import { extract } from "../../lib/extractor";
 import { ACCESS_NEEDED, createHostAccess } from "../../lib/host-access";
+import { snapshotFromInjection } from "../../lib/injection";
 import { clearJob, getJob, onJobChange, setJob, type Job } from "../../lib/jobs";
 import type { Message } from "../../lib/messages";
 import { readPage, type PageSnapshot } from "../../lib/page-reader";
@@ -288,7 +289,7 @@ async function start(): Promise<void> {
 
   try {
     const [injection] = await browser.scripting.executeScript({ target: { tabId: tab.id }, func: readPage });
-    state.snapshot = (injection?.result as PageSnapshot | undefined) ?? null;
+    state.snapshot = snapshotFromInjection(injection);
   } catch {
     state.snapshot = null; // browser pages, the extension stores, PDFs
   }
