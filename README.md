@@ -53,7 +53,7 @@ Layout: `entrypoints/` holds the popup and the background worker; `lib/` holds t
 most of it free of browser APIs and covered by `test/`. The manifest is generated from
 `wxt.config.ts` ([WXT](https://wxt.dev)).
 
-Minimum browser versions: Chrome 103, Firefox 127.
+Minimum browser versions: Chrome 103, Firefox 140.
 
 ## License
 

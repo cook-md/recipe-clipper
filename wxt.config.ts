@@ -19,10 +19,12 @@ export default defineConfig({
     // Chrome warns about keys it doesn't know, so this goes in the Firefox build only.
     ...(browser === "firefox" && {
       browser_specific_settings: {
-        // 127: the first Firefox that grants host_permissions at install.
+        // 140: the first Firefox with built-in consent for the data collection
+        // declared below; on older versions the extension would have to show its own
+        // consent screen. (Host permissions are granted at install since 127.)
         gecko: {
           id: "clipper@cooklang.org",
-          strict_min_version: "127.0",
+          strict_min_version: "140.0",
           // What leaves the browser, in addons.mozilla.org's categories (Firefox 140+
           // shows them in the install prompt). On every convert: the recipe or page
           // text (websiteContent) and the page's address (browsingActivity). On
