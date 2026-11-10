@@ -6,7 +6,9 @@ export default defineConfig({
     description: "Save the recipe on this page as a Cooklang .cook file.",
     // activeTab + scripting: read the tab only when the toolbar button is clicked,
     // so there is no "read your data on all websites" install warning.
-    permissions: ["activeTab", "scripting", "storage", "downloads"],
+    // Safari has no downloads API: there the file is written by the containing app's
+    // extension handler, reached with a native message (lib/download.ts, safari/).
+    permissions: ["activeTab", "scripting", "storage", browser === "safari" ? "nativeMessaging" : "downloads"],
     host_permissions: ["https://cook.md/*"],
     // The recipe extractors are WebAssembly, run in the popup ('wasm-unsafe-eval').
     // img-src: the popup never loads an image from a page-supplied URL, so nothing
@@ -15,7 +17,9 @@ export default defineConfig({
       extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; img-src 'self' data:;",
     },
     // 103: 'wasm-unsafe-eval' in an MV3 extension page CSP, storage.session (102).
-    minimum_chrome_version: "103",
+    // Safari gets neither this key nor the Firefox one below; its minimum version is
+    // the macOS deployment target of the Xcode project in safari/.
+    ...(browser !== "safari" && { minimum_chrome_version: "103" }),
     // Chrome warns about keys it doesn't know, so this goes in the Firefox build only.
     ...(browser === "firefox" && {
       browser_specific_settings: {

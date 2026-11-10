@@ -10,6 +10,8 @@
     "dev:firefox": "wxt -b firefox --mv3",
     "build": "wxt build",
     "build:firefox": "wxt build -b firefox --mv3",
+    "build:safari": "wxt build -b safari --mv3",
+    "build:safari-app": "npm run build:safari && xcodebuild -project \"safari/Cooklang Recipe Clipper.xcodeproj\" -scheme \"Cooklang Recipe Clipper\" -configuration Release -derivedDataPath safari/build build",
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox --mv3",
     "typecheck": "tsc --noEmit",
