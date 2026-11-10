@@ -17,6 +17,7 @@
     "postinstall": "wxt prepare"
   },
   "devDependencies": {
+    "@types/node": "^22.20.5",
     "jsdom": "^31.0.0",
     "typescript": "^5.9.0",
     "vitest": "^5.1.0",
