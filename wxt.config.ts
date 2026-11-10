@@ -1,6 +1,8 @@
 import { defineConfig } from "wxt";
 
 export default defineConfig({
+  // Xcode and SwiftPM build products, kept out of the sources zip made for Firefox review.
+  zip: { excludeSources: ["safari/build/**", "safari/CookFileSaver/.build/**"] },
   manifest: ({ browser }) => ({
     name: "Cooklang Recipe Clipper",
     description: "Save the recipe on this page as a Cooklang .cook file.",
