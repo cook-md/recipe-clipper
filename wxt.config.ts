@@ -8,9 +8,11 @@ export default defineConfig({
     // so there is no "read your data on all websites" install warning.
     permissions: ["activeTab", "scripting", "storage", "downloads"],
     host_permissions: ["https://cook.md/*"],
-    // The recipe extractors are WebAssembly, run in the popup.
+    // The recipe extractors are WebAssembly, run in the popup ('wasm-unsafe-eval').
+    // img-src: the popup never loads an image from a page-supplied URL, so nothing
+    // leaves the browser before the person clicks convert.
     content_security_policy: {
-      extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';",
+      extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; img-src 'self' data:;",
     },
     browser_specific_settings: {
       // 127: the first Firefox that grants host_permissions at install.

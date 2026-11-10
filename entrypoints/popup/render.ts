@@ -75,12 +75,8 @@ export function renderView(root: HTMLElement, view: View, notice: string, handle
         .map((key) => `${key.replace("_", " ")}: ${recipe.metadata[key]}`);
       if (facts.length) nodes.push(el("div", "meta", facts.join(" · ")));
       const scroll = el("div", "scroll");
-      if (recipe.image[0]?.startsWith("https://")) {
-        const image = el("img", "hero");
-        image.src = recipe.image[0];
-        image.alt = "";
-        scroll.append(image);
-      }
+      // No recipe photo: loading a page-supplied URL would tell that server about
+      // the visit before the person has clicked anything. The CSP forbids it too.
       scroll.append(
         el("h2", "", "Ingredients"),
         list("ul", recipe.ingredients),
