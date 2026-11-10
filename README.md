@@ -34,17 +34,24 @@ you have selected, or the whole page's text.
 
 ## Development
 
-Requires Node 22 or newer, and the local dependency described under Status.
+Requires Node 22 or newer.
 
 ```sh
 npm install
-npm run dev            # Chrome, with reload
-npm run dev:firefox    # Firefox
+npm run dev            # dev build for Chrome in .output/chrome-mv3-dev, rebuilt on change
+npm run dev:firefox    # same for Firefox
 npm test
 npm run typecheck
 npm run build && npm run build:firefox   # unpacked builds in .output/
 npm run zip && npm run zip:firefox       # store packages in .output/
 ```
+
+Neither command opens a browser. Load the build by hand:
+
+- **Chrome:** `chrome://extensions` → Developer mode → Load unpacked → `.output/chrome-mv3`
+  (or `.output/chrome-mv3-dev` while `npm run dev` is running).
+- **Firefox:** `about:debugging#/runtime/this-firefox` → Load Temporary Add-on →
+  `.output/firefox-mv3/manifest.json`.
 
 Layout: `entrypoints/` holds the popup and the background worker; `lib/` holds the logic,
 most of it free of browser APIs and covered by `test/`. The manifest is generated from
