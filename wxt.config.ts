@@ -20,7 +20,20 @@ export default defineConfig({
     ...(browser === "firefox" && {
       browser_specific_settings: {
         // 127: the first Firefox that grants host_permissions at install.
-        gecko: { id: "clipper@cooklang.org", strict_min_version: "127.0" },
+        gecko: {
+          id: "clipper@cooklang.org",
+          strict_min_version: "127.0",
+          // What leaves the browser, in addons.mozilla.org's categories (Firefox 140+
+          // shows them in the install prompt). On every convert: the recipe or page
+          // text (websiteContent) and the page's address (browsingActivity). On
+          // sign-in: the email address (personallyIdentifyingInfo) and the session
+          // token (authenticationInfo). Sign-in is optional, but these two are listed
+          // as required because `optional` means "granted through
+          // permissions.request()", and the sign-in form does not ask that way.
+          data_collection_permissions: {
+            required: ["websiteContent", "browsingActivity", "personallyIdentifyingInfo", "authenticationInfo"],
+          },
+        },
       },
     }),
   }),
