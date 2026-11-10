@@ -65,6 +65,10 @@ describe("convert", () => {
     expect(await convert(payload, undefined, fetchFn)).toEqual({ kind: "error", message: "Couldn't reach cook.md. Check your connection and try again." });
   });
 
+  it("maps 401 to unauthorized: the token was not accepted", async () => {
+    expect(await convert(payload, "stale", respond(401, { errors: ["Not authorized"] }))).toEqual({ kind: "unauthorized" });
+  });
+
   it("reports an unexpected status", async () => {
     expect(await convert(payload, undefined, respond(500))).toEqual({ kind: "error", message: "cook.md answered with an error (500). Try again in a moment." });
   });

@@ -30,6 +30,11 @@ function fakes(results: ConvertResult[] = [ok], session: Session | null = null) 
   return { deps, jobs, state };
 }
 
+const b64url = (value: string) => Buffer.from(value, "utf8").toString("base64url");
+const jwt = (exp: number) => `${b64url("{}")}.${b64url(JSON.stringify({ exp }))}.sig`;
+const VALID = jwt(NOW / 1000 + 3600);
+const EXPIRED = jwt(NOW / 1000 - 3600);
+
 const tokens = (deps: { convert: { mock: { calls: unknown[][] } } }) => deps.convert.mock.calls.map((call) => call[1]);
 
 describe("runClip", () => {
@@ -52,9 +57,9 @@ describe("runClip", () => {
   });
 
   it("sends the session token when signed in", async () => {
-    const { deps } = fakes([ok], { token: "tok", email: "a@example.com" });
+    const { deps } = fakes([ok], { token: VALID, email: "a@example.com" });
     await runClip(request, deps);
-    expect(tokens(deps)).toEqual(["tok"]);
+    expect(tokens(deps)).toEqual([VALID]);
   });
 
   it("still records the result when the download fails", async () => {
@@ -85,24 +90,87 @@ describe("runClip", () => {
   });
 
   it("waits out a short signed-in rate limit and retries once", async () => {
-    const { deps, jobs } = fakes([{ kind: "rate_limited", retryAfter: 1 }, ok], { token: "tok", email: "a@example.com" });
+    const { deps, jobs } = fakes([{ kind: "rate_limited", retryAfter: 1 }, ok], { token: VALID, email: "a@example.com" });
 
     await runClip(request, deps);
 
     expect(deps.sleep).toHaveBeenCalledTimes(1);
     expect(deps.sleep).toHaveBeenCalledWith(1000);
-    expect(tokens(deps)).toEqual(["tok", "tok"]);
+    expect(tokens(deps)).toEqual([VALID, VALID]);
     expect(jobs.at(-1)).toMatchObject({ status: "done", downloaded: true });
     expect(deps.clearSession).not.toHaveBeenCalled();
   });
 
   it("retries a short signed-in rate limit only once", async () => {
-    const { deps, jobs } = fakes([{ kind: "rate_limited", retryAfter: 1 }], { token: "tok", email: "a@example.com" });
+    const { deps, jobs } = fakes([{ kind: "rate_limited", retryAfter: 1 }], { token: VALID, email: "a@example.com" });
 
     await runClip(request, deps);
 
     expect(deps.convert).toHaveBeenCalledTimes(2);
     expect(jobs.at(-1)).toEqual({ status: "rate_limited", pageUrl: request.pageUrl, retryAt: NOW + 1000, signedIn: true });
+  });
+
+  it("never signs out over a long signed-in rate limit", async () => {
+    const { deps, jobs, state } = fakes([{ kind: "rate_limited", retryAfter: 120 }], { token: VALID, email: "a@example.com" });
+
+    await runClip(request, deps);
+
+    expect(deps.convert).toHaveBeenCalledTimes(1);
+    expect(deps.sleep).not.toHaveBeenCalled();
+    expect(jobs.at(-1)).toEqual({ status: "rate_limited", pageUrl: request.pageUrl, retryAt: NOW + 120_000, signedIn: true });
+    expect(deps.clearSession).not.toHaveBeenCalled();
+    expect(state.session).not.toBeNull();
+  });
+
+  it("drops an expired token and clips anonymously", async () => {
+    const { deps, jobs, state } = fakes([ok], { token: EXPIRED, email: "a@example.com" });
+
+    await runClip(request, deps);
+
+    expect(deps.clearSession).toHaveBeenCalledTimes(1);
+    expect(state.session).toBeNull();
+    expect(tokens(deps)).toEqual([undefined]);
+    expect(jobs.at(-1)).toMatchObject({ status: "done" });
+  });
+
+  it("records an expired token's rate limit as signed out, without a retry", async () => {
+    const { deps, jobs } = fakes([{ kind: "rate_limited", retryAfter: 1 }], { token: EXPIRED, email: "a@example.com" });
+
+    await runClip(request, deps);
+
+    expect(deps.convert).toHaveBeenCalledTimes(1);
+    expect(jobs.at(-1)).toEqual({ status: "rate_limited", pageUrl: request.pageUrl, retryAt: NOW + 1000, signedIn: false });
+  });
+
+  it("on 401 signs out and retries once without the token", async () => {
+    const { deps, jobs, state } = fakes([{ kind: "unauthorized" }, ok], { token: VALID, email: "a@example.com" });
+
+    await runClip(request, deps);
+
+    expect(deps.clearSession).toHaveBeenCalledTimes(1);
+    expect(state.session).toBeNull();
+    expect(tokens(deps)).toEqual([VALID, undefined]);
+    expect(jobs.at(-1)).toMatchObject({ status: "done", downloaded: true });
+  });
+
+  it("records the anonymous retry's rate limit as signed out", async () => {
+    const { deps, jobs } = fakes([{ kind: "unauthorized" }, { kind: "rate_limited", retryAfter: 1 }], { token: VALID, email: "a@example.com" });
+
+    await runClip(request, deps);
+
+    expect(deps.convert).toHaveBeenCalledTimes(2);
+    expect(deps.sleep).not.toHaveBeenCalled();
+    expect(jobs.at(-1)).toEqual({ status: "rate_limited", pageUrl: request.pageUrl, retryAt: NOW + 1000, signedIn: false });
+  });
+
+  it("gives up with an error when even the anonymous request is refused with 401", async () => {
+    const { deps, jobs } = fakes([{ kind: "unauthorized" }]);
+
+    await runClip(request, deps);
+
+    expect(deps.convert).toHaveBeenCalledTimes(1);
+    expect(deps.clearSession).not.toHaveBeenCalled();
+    expect(jobs.at(-1)).toEqual({ status: "error", pageUrl: request.pageUrl, message: "cook.md didn't accept the request. Try again." });
   });
 
   it("records the server's error", async () => {

@@ -1,7 +1,7 @@
 import "./style.css";
 import type { Extraction } from "@cooklang/cooklang-import";
 import { requestCode, verifyCode } from "../../lib/api";
-import { clearSession, getPendingSignIn, getSession, saveSession, setPendingSignIn, type PendingSignIn, type Session } from "../../lib/auth";
+import { clearSession, getPendingSignIn, getSession, onSessionChange, saveSession, setPendingSignIn, type PendingSignIn, type Session } from "../../lib/auth";
 import { extract } from "../../lib/extractor";
 import { cookFilename } from "../../lib/filename";
 import { clearJob, getJob, onJobChange, type Job } from "../../lib/jobs";
@@ -159,6 +159,11 @@ async function start(): Promise<void> {
   render(); // "Reading the page…"
 
   [state.session, state.pending] = await Promise.all([getSession(), getPendingSignIn()]);
+  // Keep the footer honest when the worker drops an expired or refused session.
+  onSessionChange((session) => {
+    state.session = session;
+    render();
+  });
 
   const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
   if (tab?.id === undefined) {

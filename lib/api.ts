@@ -16,6 +16,8 @@ export interface ConvertPayload {
 export type ConvertResult =
   | { kind: "ok"; cooklang: string }
   | { kind: "rate_limited"; retryAfter: number }
+  /** 401: the token was not accepted. */
+  | { kind: "unauthorized" }
   | { kind: "error"; message: string };
 
 export type CodeResult = { kind: "sent" } | { kind: "error"; message: string };
@@ -48,6 +50,7 @@ export async function convert(payload: ConvertPayload, token?: string, fetchFn: 
   }
 
   if (response.status === 429) return { kind: "rate_limited", retryAfter: retryAfter(response) };
+  if (response.status === 401) return { kind: "unauthorized" };
 
   const json = await readJson(response);
   if (response.ok && typeof json?.cooklang === "string") return { kind: "ok", cooklang: json.cooklang };

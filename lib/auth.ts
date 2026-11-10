@@ -21,6 +21,13 @@ export async function clearSession(): Promise<void> {
   await browser.storage.local.remove("session");
 }
 
+/** The worker signs out on its own when the token has expired or is refused. */
+export function onSessionChange(callback: (session: Session | null) => void): void {
+  browser.storage.local.onChanged.addListener((changes) => {
+    if (changes.session) callback((changes.session.newValue as Session | undefined) ?? null);
+  });
+}
+
 export async function getPendingSignIn(): Promise<PendingSignIn | null> {
   return ((await browser.storage.local.get("pendingSignIn")).pendingSignIn as PendingSignIn | undefined) ?? null;
 }
