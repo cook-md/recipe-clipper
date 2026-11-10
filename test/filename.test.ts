@@ -24,4 +24,22 @@ describe("cookFilename", () => {
     expect(cookFilename("")).toBe("recipe.cook");
     expect(cookFilename("!!! ???")).toBe("recipe.cook");
   });
+
+  it("prefixes names Windows reserves for devices", () => {
+    expect(cookFilename("Con")).toBe("recipe-con.cook");
+    expect(cookFilename("NUL")).toBe("recipe-nul.cook");
+    expect(cookFilename("prn")).toBe("recipe-prn.cook");
+    expect(cookFilename("Aux!")).toBe("recipe-aux.cook");
+    expect(cookFilename("COM1")).toBe("recipe-com1.cook");
+    expect(cookFilename("com9")).toBe("recipe-com9.cook");
+    expect(cookFilename("LPT1")).toBe("recipe-lpt1.cook");
+    expect(cookFilename("lpt9")).toBe("recipe-lpt9.cook");
+  });
+
+  it("leaves names that only resemble reserved ones", () => {
+    expect(cookFilename("Con Carne")).toBe("con-carne.cook");
+    expect(cookFilename("com10")).toBe("com10.cook");
+    expect(cookFilename("com0")).toBe("com0.cook");
+    expect(cookFilename("console")).toBe("console.cook");
+  });
 });
