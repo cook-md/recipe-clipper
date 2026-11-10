@@ -1,11 +1,19 @@
 import type { Extraction, Recipe } from "@cooklang/cooklang-import";
-import type { PendingSignIn } from "./auth";
+import type { PendingCode, PendingSignIn } from "./auth";
 import { cookFilename } from "./filename";
 import type { Job } from "./jobs";
 import type { PageSnapshot } from "./page-reader";
 
 /** A conversion with no answer after this long is shown as failed (the worker was stopped). */
 const STUCK_AFTER_MS = 90_000;
+
+/** A stored code step is dropped after this long: the emailed code is no use by then. */
+export const CODE_STEP_TTL_MS = 10 * 60_000;
+
+/** Also true for a stored step without a timestamp, which an older version wrote. */
+export function pendingCodeExpired(pending: PendingCode, now: number): boolean {
+  return typeof pending.requestedAt !== "number" || now - pending.requestedAt > CODE_STEP_TTL_MS;
+}
 
 export type View =
   | { kind: "loading" }
@@ -31,7 +39,7 @@ export interface ViewInput {
 
 export function viewFor({ snapshot, extraction, job, pending, now }: ViewInput): View {
   if (pending?.step === "email") return { kind: "sign-in-email" };
-  if (pending?.step === "code") return { kind: "sign-in-code", email: pending.email };
+  if (pending?.step === "code" && !pendingCodeExpired(pending, now)) return { kind: "sign-in-code", email: pending.email };
 
   if (snapshot === null) return { kind: "unreadable" };
   if (snapshot === undefined || extraction === undefined) return { kind: "loading" };

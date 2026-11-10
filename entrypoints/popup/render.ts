@@ -9,6 +9,8 @@ export interface Handlers {
   showSignIn(): void;
   submitEmail(email: string): void;
   submitCode(code: string): void;
+  resendCode(): void;
+  useDifferentEmail(): void;
   cancelSignIn(): void;
   signOut(): void;
 }
@@ -54,7 +56,25 @@ function form(placeholder: string, type: string, submitLabel: string, onSubmit: 
   return node;
 }
 
+/**
+ * Identifies a form on screen. While it stays the same, a render must not rebuild
+ * the form: that would throw away what the person has typed and the focus.
+ */
+function formKey(view: View): string {
+  if (view.kind === "sign-in-email") return view.kind;
+  if (view.kind === "sign-in-code") return `${view.kind}:${view.email}`;
+  return "";
+}
+
 export function renderView(root: HTMLElement, view: View, notice: string, handlers: Handlers): void {
+  const key = formKey(view);
+  const shownNotice = root.querySelector(":scope > .notice");
+  if (key && root.dataset.form === key && shownNotice) {
+    shownNotice.textContent = notice;
+    return;
+  }
+  root.dataset.form = key;
+
   const nodes: (HTMLElement | string)[] = [];
 
   switch (view.kind) {
@@ -147,13 +167,21 @@ export function renderView(root: HTMLElement, view: View, notice: string, handle
         el("h1", "", "Check your email"),
         el("p", "", `Enter the code sent to ${view.email}.`),
         form("123456", "text", "Sign in", handlers.submitCode),
-        actions(button("Use a different email", handlers.cancelSignIn, "link")),
+        actions(
+          button("Resend code", handlers.resendCode, "link"),
+          button("Use a different email", handlers.useDifferentEmail, "link"),
+          button("Cancel", handlers.cancelSignIn, "link"),
+        ),
       );
       break;
   }
 
-  nodes.push(el("div", "notice", notice));
+  const noticeNode = el("div", "notice", notice);
+  noticeNode.setAttribute("role", "status");
+  nodes.push(noticeNode);
   root.replaceChildren(...nodes);
+  // autofocus only works once per document; a form that appears later needs this.
+  if (key) root.querySelector("input")?.focus();
 }
 
 export function renderFooter(root: HTMLElement, session: Session | null, view: View, handlers: Handlers): void {

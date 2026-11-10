@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { viewFor, type ViewInput } from "../lib/view";
+import { CODE_STEP_TTL_MS, pendingCodeExpired, viewFor, type ViewInput } from "../lib/view";
 
 const snapshot = { url: "https://example.com/r", title: "Lemon Chicken | Example", html: "<html></html>", selection: "", text: "page text" };
 const extraction = {
@@ -63,9 +63,33 @@ describe("viewFor", () => {
 
   it("puts a pending sign-in ahead of everything else", () => {
     expect(viewFor({ ...base, pending: { step: "email" } })).toEqual({ kind: "sign-in-email" });
-    expect(viewFor({ ...base, pending: { step: "code", email: "a@example.com" } })).toEqual({
+    expect(viewFor({ ...base, pending: { step: "code", email: "a@example.com", requestedAt: base.now - 60_000 } })).toEqual({
       kind: "sign-in-code",
       email: "a@example.com",
     });
+  });
+
+  it("ignores a code step older than ten minutes", () => {
+    expect(CODE_STEP_TTL_MS).toBe(10 * 60_000);
+    const pending = { step: "code" as const, email: "a@example.com", requestedAt: base.now - CODE_STEP_TTL_MS };
+    expect(viewFor({ ...base, pending }).kind).toBe("sign-in-code");
+    expect(viewFor({ ...base, pending, now: base.now + 1 }).kind).toBe("preview");
+  });
+});
+
+describe("pendingCodeExpired", () => {
+  const pending = { step: "code" as const, email: "a@example.com", requestedAt: 1_000_000 };
+
+  it("is false for ten minutes after the code was requested", () => {
+    expect(pendingCodeExpired(pending, 1_000_000)).toBe(false);
+    expect(pendingCodeExpired(pending, 1_000_000 + CODE_STEP_TTL_MS)).toBe(false);
+  });
+
+  it("is true after that", () => {
+    expect(pendingCodeExpired(pending, 1_000_000 + CODE_STEP_TTL_MS + 1)).toBe(true);
+  });
+
+  it("is true for a stored step with no timestamp (written by an older version)", () => {
+    expect(pendingCodeExpired({ step: "code", email: "a@example.com" } as any, 1_000_000)).toBe(true);
   });
 });
