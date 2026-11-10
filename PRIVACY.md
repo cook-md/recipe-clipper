@@ -16,7 +16,7 @@ cook.md:
   with no selection, the page's readable text (up to 100,000 characters);
 - the page's address, without anything after a `#`, so the saved recipe can cite its
   source;
-- which browser build of the extension made the request (Chrome or Firefox).
+- which browser build of the extension made the request (Chrome, Firefox or Safari).
 
 As with any web request, cook.md also sees your IP address. It uses it to enforce the
 limit of one clip a minute for requests without an account.
