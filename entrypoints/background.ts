@@ -1,6 +1,6 @@
 import { clientFor, convert } from "../lib/api";
 import { clearSession, getSession } from "../lib/auth";
-import { runClip, type ClipDeps } from "../lib/clip";
+import { clipInFlight, runClip, type ClipDeps } from "../lib/clip";
 import { saveCook } from "../lib/download";
 import { setJob } from "../lib/jobs";
 import type { Message } from "../lib/messages";
@@ -26,6 +26,11 @@ export default defineBackground(() => {
     if (message?.type === "download") {
       saveCook(message.cooklang, message.filename).then(sendResponse, () => sendResponse(false));
       return true;
+    }
+    if (message?.type === "status") {
+      // False after the browser stopped the worker mid-request: the set is in memory.
+      sendResponse(clipInFlight(message.tabId));
+      return undefined;
     }
     return undefined;
   });

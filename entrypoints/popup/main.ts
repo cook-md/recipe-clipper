@@ -4,7 +4,7 @@ import { requestCode, verifyCode } from "../../lib/api";
 import { clearSession, getPendingSignIn, getSession, onSessionChange, saveSession, setPendingSignIn, type PendingSignIn, type Session } from "../../lib/auth";
 import { extract } from "../../lib/extractor";
 import { cookFilename } from "../../lib/filename";
-import { clearJob, getJob, onJobChange, type Job } from "../../lib/jobs";
+import { clearJob, getJob, onJobChange, setJob, type Job } from "../../lib/jobs";
 import type { ClipRequest, Message } from "../../lib/messages";
 import { readPage, type PageSnapshot } from "../../lib/page-reader";
 import { viewFor, type View } from "../../lib/view";
@@ -155,6 +155,35 @@ const handlers: Handlers = {
   },
 };
 
+/**
+ * A "converting" job found on opening may be an orphan: the browser stops the
+ * worker (and drops its request) about 30 s after the popup closes. The worker
+ * knows which tabs it is still working for; if this one is not among them, say so
+ * now instead of waiting for the 90 s check in viewFor.
+ */
+async function checkInterrupted(tabId: number): Promise<void> {
+  const stored = state.job;
+  if (stored?.status !== "converting" || stored.pageUrl !== state.snapshot?.url) return;
+
+  let running: unknown;
+  try {
+    running = await send({ type: "status", tabId });
+  } catch {
+    return; // no answer: the 90 s check still applies
+  }
+  if (running !== false) return;
+
+  // The clip may have finished between the two reads: look again before deciding.
+  const latest = await getJob(tabId);
+  if (latest?.status !== "converting" || latest.startedAt !== stored.startedAt) {
+    state.job = latest;
+  } else {
+    state.job = { status: "error", pageUrl: latest.pageUrl, message: "The conversion was interrupted. Try again." };
+    await setJob(tabId, state.job);
+  }
+  render();
+}
+
 async function start(): Promise<void> {
   render(); // "Reading the page…"
 
@@ -186,6 +215,7 @@ async function start(): Promise<void> {
     state.snapshot = null; // browser pages, the extension stores, PDFs
   }
   render();
+  void checkInterrupted(tab.id);
 
   state.extraction = state.snapshot ? await extract(state.snapshot.html, state.snapshot.url) : null;
   render();

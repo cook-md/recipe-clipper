@@ -102,7 +102,7 @@ export function renderView(root: HTMLElement, view: View, notice: string, handle
       break;
 
     case "converting":
-      nodes.push(el("h1", "", "Converting…"), el("p", "", "This takes a few seconds. You can close this window; the file will still be saved."));
+      nodes.push(el("h1", "", "Converting…"), el("p", "", "Keep this window open until it's done."));
       break;
 
     case "done":

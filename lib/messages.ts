@@ -10,4 +10,6 @@ export interface ClipRequest {
 
 export type Message =
   | { type: "clip"; request: ClipRequest }
-  | { type: "download"; cooklang: string; filename: string };
+  | { type: "download"; cooklang: string; filename: string }
+  /** Is a clip for this tab still running in the worker? Answered with a boolean. */
+  | { type: "status"; tabId: number };
