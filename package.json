@@ -24,6 +24,6 @@
     "wxt": "^0.21.5"
   },
   "dependencies": {
-    "@cooklang/cooklang-import": "file:../cooklang-import-wasm/wasm"
+    "@cooklang/cooklang-import": "0.11.0"
   }
 }

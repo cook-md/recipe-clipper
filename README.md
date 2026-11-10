@@ -7,11 +7,8 @@ a [Cooklang](https://cooklang.org) `.cook` file.
 
 Version 0.1.0, not yet in the Chrome Web Store or on addons.mozilla.org.
 
-The project does not build from a fresh clone on another machine yet. It depends on
-`@cooklang/cooklang-import` (the recipe extractors compiled to WebAssembly) through a
-local path, `file:../cooklang-import-wasm/wasm`, because that package is not on npm yet.
-Until it is published, `npm install` needs a built checkout of it next to this
-directory, and the CI workflow in `.github/workflows/ci.yml` cannot pass.
+It has been run in headless Chrome and Firefox against a mock server, but not yet
+through a full manual pass on real sites.
 
 ## What it does
 
