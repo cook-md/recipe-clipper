@@ -75,7 +75,11 @@ const handlers: Handlers = {
         };
 
     state.notice = "";
-    // The worker writes the job to session storage; onJobChange re-renders.
+    // Show "Converting…" at once, so the button is gone before a second click can
+    // land. The worker writes the same job to session storage, then the outcome;
+    // onJobChange re-renders.
+    state.job = { status: "converting", pageUrl: request.pageUrl, filename: request.filename, startedAt: Date.now() };
+    render();
     void send({ type: "clip", request });
   },
 
