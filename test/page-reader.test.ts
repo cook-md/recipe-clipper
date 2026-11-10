@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { readPage } from "../lib/page-reader";
 
 describe("readPage", () => {
@@ -22,8 +22,22 @@ describe("readPage", () => {
     expect(page.html.startsWith("<html")).toBe(true);
   });
 
-  it("returns readable text without scripts, styles or extra whitespace", () => {
-    expect(readPage().text).toBe("Pancakes Whisk the flour and eggs.");
+  afterEach(() => {
+    // jsdom has no innerText; some tests define it on this body.
+    delete (document.body as any).innerText;
+  });
+
+  it("prefers the rendered text (innerText) and keeps its line breaks", () => {
+    Object.defineProperty(document.body, "innerText", {
+      configurable: true,
+      get: () => "Pancakes\n\nIngredients\n1 egg  \n\t2 cups   flour\n\n\n\n\nMethod\r\nWhisk.\n",
+    });
+    expect(readPage().text).toBe("Pancakes\n\nIngredients\n1 egg\n2 cups flour\n\nMethod\nWhisk.");
+  });
+
+  it("falls back to the body's text without scripts or styles where innerText is missing", () => {
+    expect(typeof (document.body as any).innerText).toBe("undefined");
+    expect(readPage().text).toBe("Pancakes\n\nWhisk the flour\nand eggs.");
   });
 
   it("does not modify the page", () => {
@@ -38,11 +52,16 @@ describe("readPage", () => {
     getSelection()!.removeAllRanges();
     getSelection()!.addRange(range);
 
-    expect(readPage().selection).toContain("Whisk");
+    expect(readPage().selection).toBe("Whisk the flour\nand eggs.");
   });
 
   it("caps the text", () => {
     document.body.innerHTML = `<p>${"word ".repeat(40_000)}</p>`;
+    expect(readPage().text.length).toBe(100_000);
+  });
+
+  it("caps the rendered text too", () => {
+    Object.defineProperty(document.body, "innerText", { configurable: true, get: () => "line\n".repeat(40_000) });
     expect(readPage().text.length).toBe(100_000);
   });
 });
