@@ -1,0 +1,606 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CDB3DF6930A3985000281F95 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB3DF6830A3985000281F95 /* AppDelegate.swift */; };
+		CDB3DF6D30A3985000281F95 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = CDB3DF6B30A3985000281F95 /* Main.html */; };
+		CDB3DF6F30A3985000281F95 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDB3DF6E30A3985000281F95 /* Icon.png */; };
+		CDB3DF7130A3985000281F95 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = CDB3DF7030A3985000281F95 /* Style.css */; };
+		CDB3DF7330A3985000281F95 /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = CDB3DF7230A3985000281F95 /* Script.js */; };
+		CDB3DF7530A3985000281F95 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB3DF7430A3985000281F95 /* ViewController.swift */; };
+		CDB3DF7830A3985000281F95 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CDB3DF7630A3985000281F95 /* Main.storyboard */; };
+		CDB3DF7A30A3985100281F95 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CDB3DF7930A3985100281F95 /* Assets.xcassets */; };
+		CDB3DF8330A3985100281F95 /* Cooklang Recipe Clipper Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = CDB3DF8230A3985100281F95 /* Cooklang Recipe Clipper Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		CDB3DF8830A3985100281F95 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB3DF8730A3985100281F95 /* SafariWebExtensionHandler.swift */; };
+		CDB3DFA230A3985200281F95 /* CookFileSaver.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDB3DFA130A3985200281F95 /* CookFileSaver.swift */; };
+		CDB3DF9B30A3985200281F95 /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = CDB3DF9530A3985200281F95 /* background.js */; };
+		CDB3DF9C30A3985200281F95 /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = CDB3DF9630A3985200281F95 /* popup.html */; };
+		CDB3DF9D30A3985200281F95 /* chunks in Resources */ = {isa = PBXBuildFile; fileRef = CDB3DF9730A3985200281F95 /* chunks */; };
+		CDB3DF9E30A3985200281F95 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = CDB3DF9830A3985200281F95 /* manifest.json */; };
+		CDB3DF9F30A3985200281F95 /* icon in Resources */ = {isa = PBXBuildFile; fileRef = CDB3DF9930A3985200281F95 /* icon */; };
+		CDB3DFA030A3985200281F95 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = CDB3DF9A30A3985200281F95 /* assets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CDB3DF8430A3985100281F95 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDB3DF5D30A3984F00281F95 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CDB3DF8130A3985100281F95;
+			remoteInfo = "Cooklang Recipe Clipper Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CDB3DF9030A3985100281F95 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				CDB3DF8330A3985100281F95 /* Cooklang Recipe Clipper Extension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		CDB3DF6530A3985000281F95 /* Cooklang Recipe Clipper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cooklang Recipe Clipper.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDB3DF6830A3985000281F95 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		CDB3DF6C30A3985000281F95 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = ../Base.lproj/Main.html; sourceTree = "<group>"; };
+		CDB3DF6E30A3985000281F95 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		CDB3DF7030A3985000281F95 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
+		CDB3DF7230A3985000281F95 /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
+		CDB3DF7430A3985000281F95 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		CDB3DF7730A3985000281F95 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		CDB3DF7930A3985100281F95 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CDB3DF7B30A3985100281F95 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDB3DF7D30A3985100281F95 /* Cooklang Recipe Clipper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Cooklang Recipe Clipper.entitlements"; sourceTree = "<group>"; };
+		CDB3DF8230A3985100281F95 /* Cooklang Recipe Clipper Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "Cooklang Recipe Clipper Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDB3DF8730A3985100281F95 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
+		CDB3DFA130A3985200281F95 /* CookFileSaver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CookFileSaver.swift; path = CookFileSaver/Sources/CookFileSaver/CookFileSaver.swift; sourceTree = SOURCE_ROOT; };
+		CDB3DF8930A3985100281F95 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CDB3DF8A30A3985100281F95 /* Cooklang_Recipe_Clipper_Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Cooklang_Recipe_Clipper_Extension.entitlements; sourceTree = "<group>"; };
+		CDB3DF9530A3985200281F95 /* background.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = background.js; sourceTree = "<group>"; };
+		CDB3DF9630A3985200281F95 /* popup.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = popup.html; sourceTree = "<group>"; };
+		CDB3DF9730A3985200281F95 /* chunks */ = {isa = PBXFileReference; lastKnownFileType = folder; path = chunks; sourceTree = "<group>"; };
+		CDB3DF9830A3985200281F95 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = manifest.json; sourceTree = "<group>"; };
+		CDB3DF9930A3985200281F95 /* icon */ = {isa = PBXFileReference; lastKnownFileType = folder; path = icon; sourceTree = "<group>"; };
+		CDB3DF9A30A3985200281F95 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CDB3DF6230A3984F00281F95 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CDB3DF7F30A3985100281F95 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CDB3DF5C30A3984F00281F95 = {
+			isa = PBXGroup;
+			children = (
+				CDB3DF6730A3985000281F95 /* Cooklang Recipe Clipper */,
+				CDB3DF8630A3985100281F95 /* Cooklang Recipe Clipper Extension */,
+				CDB3DF6630A3985000281F95 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CDB3DF6630A3985000281F95 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CDB3DF6530A3985000281F95 /* Cooklang Recipe Clipper.app */,
+				CDB3DF8230A3985100281F95 /* Cooklang Recipe Clipper Extension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CDB3DF6730A3985000281F95 /* Cooklang Recipe Clipper */ = {
+			isa = PBXGroup;
+			children = (
+				CDB3DF6830A3985000281F95 /* AppDelegate.swift */,
+				CDB3DF7430A3985000281F95 /* ViewController.swift */,
+				CDB3DF7630A3985000281F95 /* Main.storyboard */,
+				CDB3DF7930A3985100281F95 /* Assets.xcassets */,
+				CDB3DF7B30A3985100281F95 /* Info.plist */,
+				CDB3DF7D30A3985100281F95 /* Cooklang Recipe Clipper.entitlements */,
+				CDB3DF6A30A3985000281F95 /* Resources */,
+			);
+			path = "Cooklang Recipe Clipper";
+			sourceTree = "<group>";
+		};
+		CDB3DF6A30A3985000281F95 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CDB3DF6B30A3985000281F95 /* Main.html */,
+				CDB3DF6E30A3985000281F95 /* Icon.png */,
+				CDB3DF7030A3985000281F95 /* Style.css */,
+				CDB3DF7230A3985000281F95 /* Script.js */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		CDB3DF8630A3985100281F95 /* Cooklang Recipe Clipper Extension */ = {
+			isa = PBXGroup;
+			children = (
+				CDB3DF9430A3985200281F95 /* Resources */,
+				CDB3DF8730A3985100281F95 /* SafariWebExtensionHandler.swift */,
+				CDB3DFA130A3985200281F95 /* CookFileSaver.swift */,
+				CDB3DF8930A3985100281F95 /* Info.plist */,
+				CDB3DF8A30A3985100281F95 /* Cooklang_Recipe_Clipper_Extension.entitlements */,
+			);
+			path = "Cooklang Recipe Clipper Extension";
+			sourceTree = "<group>";
+		};
+		CDB3DF9430A3985200281F95 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CDB3DF9530A3985200281F95 /* background.js */,
+				CDB3DF9630A3985200281F95 /* popup.html */,
+				CDB3DF9730A3985200281F95 /* chunks */,
+				CDB3DF9830A3985200281F95 /* manifest.json */,
+				CDB3DF9930A3985200281F95 /* icon */,
+				CDB3DF9A30A3985200281F95 /* assets */,
+			);
+			name = Resources;
+			path = "../.output/safari-mv3";
+			sourceTree = SOURCE_ROOT;
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CDB3DF6430A3984F00281F95 /* Cooklang Recipe Clipper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CDB3DF9130A3985100281F95 /* Build configuration list for PBXNativeTarget "Cooklang Recipe Clipper" */;
+			buildPhases = (
+				CDB3DF6130A3984F00281F95 /* Sources */,
+				CDB3DF6230A3984F00281F95 /* Frameworks */,
+				CDB3DF6330A3984F00281F95 /* Resources */,
+				CDB3DF9030A3985100281F95 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CDB3DF8530A3985100281F95 /* PBXTargetDependency */,
+			);
+			name = "Cooklang Recipe Clipper";
+			productName = "Cooklang Recipe Clipper";
+			productReference = CDB3DF6530A3985000281F95 /* Cooklang Recipe Clipper.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CDB3DF8130A3985100281F95 /* Cooklang Recipe Clipper Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CDB3DF8D30A3985100281F95 /* Build configuration list for PBXNativeTarget "Cooklang Recipe Clipper Extension" */;
+			buildPhases = (
+				CDB3DF7E30A3985100281F95 /* Sources */,
+				CDB3DF7F30A3985100281F95 /* Frameworks */,
+				CDB3DF8030A3985100281F95 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Cooklang Recipe Clipper Extension";
+			productName = "Cooklang Recipe Clipper Extension";
+			productReference = CDB3DF8230A3985100281F95 /* Cooklang Recipe Clipper Extension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CDB3DF5D30A3984F00281F95 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1520;
+				LastUpgradeCheck = 1520;
+				TargetAttributes = {
+					CDB3DF6430A3984F00281F95 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+					CDB3DF8130A3985100281F95 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+				};
+			};
+			buildConfigurationList = CDB3DF6030A3984F00281F95 /* Build configuration list for PBXProject "Cooklang Recipe Clipper" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CDB3DF5C30A3984F00281F95;
+			productRefGroup = CDB3DF6630A3985000281F95 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CDB3DF6430A3984F00281F95 /* Cooklang Recipe Clipper */,
+				CDB3DF8130A3985100281F95 /* Cooklang Recipe Clipper Extension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CDB3DF6330A3984F00281F95 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CDB3DF6F30A3985000281F95 /* Icon.png in Resources */,
+				CDB3DF7830A3985000281F95 /* Main.storyboard in Resources */,
+				CDB3DF7330A3985000281F95 /* Script.js in Resources */,
+				CDB3DF6D30A3985000281F95 /* Main.html in Resources */,
+				CDB3DF7A30A3985100281F95 /* Assets.xcassets in Resources */,
+				CDB3DF7130A3985000281F95 /* Style.css in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CDB3DF8030A3985100281F95 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CDB3DF9E30A3985200281F95 /* manifest.json in Resources */,
+				CDB3DF9F30A3985200281F95 /* icon in Resources */,
+				CDB3DF9D30A3985200281F95 /* chunks in Resources */,
+				CDB3DFA030A3985200281F95 /* assets in Resources */,
+				CDB3DF9B30A3985200281F95 /* background.js in Resources */,
+				CDB3DF9C30A3985200281F95 /* popup.html in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CDB3DF6130A3984F00281F95 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CDB3DF7530A3985000281F95 /* ViewController.swift in Sources */,
+				CDB3DF6930A3985000281F95 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CDB3DF7E30A3985100281F95 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CDB3DF8830A3985100281F95 /* SafariWebExtensionHandler.swift in Sources */,
+				CDB3DFA230A3985200281F95 /* CookFileSaver.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CDB3DF8530A3985100281F95 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CDB3DF8130A3985100281F95 /* Cooklang Recipe Clipper Extension */;
+			targetProxy = CDB3DF8430A3985100281F95 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CDB3DF6B30A3985000281F95 /* Main.html */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CDB3DF6C30A3985000281F95 /* Base */,
+			);
+			name = Main.html;
+			sourceTree = "<group>";
+		};
+		CDB3DF7630A3985000281F95 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CDB3DF7730A3985000281F95 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CDB3DF8B30A3985100281F95 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CDB3DF8C30A3985100281F95 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		CDB3DF8E30A3985100281F95 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Cooklang Recipe Clipper Extension/Cooklang_Recipe_Clipper_Extension.entitlements";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Cooklang Recipe Clipper Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Cooklang Recipe Clipper Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MARKETING_VERSION = 0.1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cooklang.RecipeClipper.Extension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CDB3DF8F30A3985100281F95 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = "Cooklang Recipe Clipper Extension/Cooklang_Recipe_Clipper_Extension.entitlements";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Cooklang Recipe Clipper Extension/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Cooklang Recipe Clipper Extension";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MARKETING_VERSION = 0.1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cooklang.RecipeClipper.Extension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		CDB3DF9230A3985100281F95 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Cooklang Recipe Clipper/Cooklang Recipe Clipper.entitlements";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Cooklang Recipe Clipper/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Cooklang Recipe Clipper";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MARKETING_VERSION = 0.1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cooklang.RecipeClipper";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CDB3DF9330A3985100281F95 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Cooklang Recipe Clipper/Cooklang Recipe Clipper.entitlements";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Cooklang Recipe Clipper/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Cooklang Recipe Clipper";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.3;
+				MARKETING_VERSION = 0.1.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					SafariServices,
+					"-framework",
+					WebKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cooklang.RecipeClipper";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CDB3DF6030A3984F00281F95 /* Build configuration list for PBXProject "Cooklang Recipe Clipper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDB3DF8B30A3985100281F95 /* Debug */,
+				CDB3DF8C30A3985100281F95 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CDB3DF8D30A3985100281F95 /* Build configuration list for PBXNativeTarget "Cooklang Recipe Clipper Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDB3DF8E30A3985100281F95 /* Debug */,
+				CDB3DF8F30A3985100281F95 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CDB3DF9130A3985100281F95 /* Build configuration list for PBXNativeTarget "Cooklang Recipe Clipper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDB3DF9230A3985100281F95 /* Debug */,
+				CDB3DF9330A3985100281F95 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CDB3DF5D30A3984F00281F95 /* Project object */;
+}

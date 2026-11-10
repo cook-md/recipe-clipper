@@ -2,3 +2,7 @@ node_modules/
 .output/
 .wxt/
 *.zip
+safari/build/
+safari/CookFileSaver/.build/
+xcuserdata/
+.DS_Store
