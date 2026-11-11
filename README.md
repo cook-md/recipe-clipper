@@ -3,9 +3,15 @@
 A browser extension for Chrome, Firefox and Safari (macOS) that saves the recipe on the current page as
 a [Cooklang](https://cooklang.org) `.cook` file.
 
+| The recipe found on the page | The saved Cooklang file |
+|---|---|
+| ![Popup showing the recipe found on the page, before anything is sent](store/screenshots/1-preview.png) | ![Popup showing the converted Cooklang file, saved to Downloads](store/screenshots/2-saved.png) |
+
 ## Status
 
-Version 0.1.0, not yet in the Chrome Web Store or on addons.mozilla.org.
+Version 0.1.0. Submitted to the Chrome Web Store, addons.mozilla.org and the Mac App
+Store on 2026-11-11 and waiting for review. Until they are listed, install from the
+[releases page](https://github.com/cook-md/recipe-clipper/releases).
 
 It has been run by hand in Chrome, Firefox and Safari 18.6 against cook.md, but not yet
 through a full manual pass on many sites. Safari 18 refuses WebAssembly in extension
