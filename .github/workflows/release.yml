@@ -89,6 +89,8 @@ jobs:
             --keychain "$KEYCHAIN_PATH"
 
           echo ">>>> Building and signing"
+          # CODE_SIGN_INJECT_BASE_ENTITLEMENTS=NO: a plain `build` adds the debugging
+          # entitlement get-task-allow, which Apple refuses to notarize.
           xcodebuild -project "safari/Cooklang Recipe Clipper.xcodeproj" \
             -scheme "Cooklang Recipe Clipper" -configuration Release \
             -derivedDataPath safari/build \
@@ -97,6 +99,7 @@ jobs:
             DEVELOPMENT_TEAM="$APPLEID_TEAMID" \
             PROVISIONING_PROFILE_SPECIFIER="" \
             ENABLE_HARDENED_RUNTIME=YES \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=NO \
             OTHER_CODE_SIGN_FLAGS="--timestamp --keychain $KEYCHAIN_PATH" \
             MARKETING_VERSION="$VERSION" \
             build
