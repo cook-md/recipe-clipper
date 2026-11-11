@@ -1,0 +1,146 @@
+name: Release
+
+# Push a tag like v0.1.0 (matching "version" in package.json) to build the three
+# extensions and attach them to a GitHub release:
+#   - the Chrome and Firefox zips (the same files that go to the stores),
+#   - the Safari app, signed with the Developer ID certificate and notarized.
+#
+# The Safari job needs the same six secrets as cooklang/cookcli's release:
+# APPLEDEV_APPSIGNKEY_BASE64, APPLEDEV_SIGNKEY_PASS, APPLEDEV_KEY_IDENT,
+# APPLEDEV_ID_NAME, APPLEDEV_TEAM_ID, APPLEDEV_PASSWORD.
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  zips:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Tag matches package.json
+        run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+      - run: npm ci
+      - run: npm test
+      - run: npm run zip
+      - run: npm run zip:firefox
+      - uses: actions/upload-artifact@v7
+        with:
+          name: zips
+          path: .output/*.zip
+          include-hidden-files: true
+
+  safari:
+    runs-on: macos-latest
+    # Notarization alone may wait up to 30 minutes.
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Tag matches package.json
+        run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+      - run: npm ci
+      - run: swift test
+        working-directory: safari/CookFileSaver
+      - run: npm run build:safari
+
+      - name: Sign, notarize and staple
+        env:
+          APP_CERTIFICATE_BASE64: ${{ secrets.APPLEDEV_APPSIGNKEY_BASE64 }}
+          P12_PASSWORD: ${{ secrets.APPLEDEV_SIGNKEY_PASS }}
+          KEYCHAIN_PASSWORD: ${{ secrets.APPLEDEV_SIGNKEY_PASS }}
+          APPLEID_USERNAME: ${{ secrets.APPLEDEV_ID_NAME }}
+          APPLEID_TEAMID: ${{ secrets.APPLEDEV_TEAM_ID }}
+          APPLEID_PASSWORD: ${{ secrets.APPLEDEV_PASSWORD }}
+          APPLICATION_KEY_IDENT: ${{ secrets.APPLEDEV_KEY_IDENT }}
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          KEYCHAIN_PATH="$RUNNER_TEMP/app-signing.keychain-db"
+          KEYCHAIN_ENTRY="AC_PASSWORD"
+          CERTIFICATE_PATH="$RUNNER_TEMP/app_certificate.p12"
+          APP="safari/build/Build/Products/Release/Cooklang Recipe Clipper.app"
+          OUT="Cooklang-Recipe-Clipper-Safari-$VERSION.zip"
+
+          echo -n "$APP_CERTIFICATE_BASE64" | base64 --decode -o "$CERTIFICATE_PATH"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERTIFICATE_PATH" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          # Lets codesign use the key without a prompt nobody can answer here.
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" > /dev/null
+          security list-keychain -d user -s "$KEYCHAIN_PATH"
+          xcrun notarytool store-credentials "$KEYCHAIN_ENTRY" \
+            --team-id "$APPLEID_TEAMID" \
+            --apple-id "$APPLEID_USERNAME" \
+            --password "$APPLEID_PASSWORD" \
+            --keychain "$KEYCHAIN_PATH"
+
+          echo ">>>> Building and signing"
+          xcodebuild -project "safari/Cooklang Recipe Clipper.xcodeproj" \
+            -scheme "Cooklang Recipe Clipper" -configuration Release \
+            -derivedDataPath safari/build \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="$APPLICATION_KEY_IDENT" \
+            DEVELOPMENT_TEAM="$APPLEID_TEAMID" \
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            ENABLE_HARDENED_RUNTIME=YES \
+            OTHER_CODE_SIGN_FLAGS="--timestamp --keychain $KEYCHAIN_PATH" \
+            MARKETING_VERSION="$VERSION" \
+            build
+          codesign --verify --deep --strict --verbose "$APP"
+
+          echo ">>>> Submitting for notarization"
+          ditto -c -k --keepParent "$APP" "$RUNNER_TEMP/notarize.zip"
+          submission=$(xcrun notarytool submit "$RUNNER_TEMP/notarize.zip" \
+            --keychain-profile "$KEYCHAIN_ENTRY" \
+            --keychain "$KEYCHAIN_PATH" \
+            --wait \
+            --timeout 30m \
+            --output-format json)
+          echo "$submission"
+          submission_id=$(jq -r '.id' <<< "$submission")
+          xcrun notarytool log "$submission_id" \
+            --keychain-profile "$KEYCHAIN_ENTRY" \
+            --keychain "$KEYCHAIN_PATH" || true
+          # Safari hides the extension of an app that is not notarized, so a
+          # rejected submission is a failed release.
+          test "$(jq -r '.status' <<< "$submission")" = "Accepted"
+
+          echo ">>>> Stapling"
+          xcrun stapler staple "$APP"
+          spctl -a -vv "$APP"
+          ditto -c -k --keepParent "$APP" "$OUT"
+
+          security delete-keychain "$KEYCHAIN_PATH"
+          rm -f "$CERTIFICATE_PATH"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: safari
+          path: Cooklang-Recipe-Clipper-Safari-*.zip
+
+  release:
+    needs: [zips, safari]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          merge-multiple: true
+          path: dist
+      # Created as a draft: look it over, then publish it from the releases page.
+      - run: gh release create "$GITHUB_REF_NAME" dist/* --repo "$GITHUB_REPOSITORY" --draft --generate-notes --title "$GITHUB_REF_NAME"
+        env:
+          GH_TOKEN: ${{ github.token }}

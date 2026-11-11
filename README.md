@@ -111,6 +111,23 @@ The Safari build differs from the others in two places: the manifest has `native
 instead of `downloads`, and the file is written by the app as described above. If that
 fails, the popup's "Save .cook" button falls back to a download link.
 
+## Releases
+
+Bump `version` in `package.json`, commit, then push a tag with the same number:
+
+```sh
+git tag v0.1.0 && git push origin v0.1.0
+```
+
+`.github/workflows/release.yml` builds the Chrome and Firefox zips (the files that go to
+the stores) and the Safari app, signs the app with the Developer ID certificate, has
+Apple notarize it, and attaches everything to a draft GitHub release. Publish the draft
+from the releases page. The Safari job needs the `APPLEDEV_*` secrets named at the top
+of the workflow.
+
+To install the Safari version from a release: unzip it, move the app to Applications,
+open it once, then tick the extension in Safari → Settings → Extensions.
+
 ## License
 
 MIT
