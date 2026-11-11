@@ -1,3 +1,4 @@
+import { extractionFailure } from "../../lib/extractor";
 import type { Session } from "../../lib/auth";
 import type { View } from "../../lib/view";
 
@@ -120,6 +121,8 @@ export function renderView(root: HTMLElement, view: View, notice: string, handle
         ),
         actions(button(view.hasSelection ? "Convert selection" : "Convert this page anyway", handlers.convert, "primary")),
       );
+      // The recipe reader itself failed, which is a different thing from a page without a recipe.
+      if (extractionFailure()) nodes.push(el("div", "meta", `Recipe reader could not start (${extractionFailure()})`));
       break;
 
     case "converting":

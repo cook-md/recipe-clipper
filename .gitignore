@@ -6,3 +6,4 @@ safari/build/
 safari/CookFileSaver/.build/
 xcuserdata/
 .DS_Store
+lib/generated/*.js
