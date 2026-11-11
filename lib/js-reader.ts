@@ -11,7 +11,11 @@ import { initSync } from "@cooklang/cooklang-import";
  */
 export async function startJsReader(): Promise<void> {
   const exports = await import("./generated/reader-asm.js");
-  const globals = WebAssembly as unknown as Record<string, unknown>;
+  // Where WebAssembly is switched off altogether there is no global to borrow.
+  const scope = globalThis as unknown as { WebAssembly?: Record<string, unknown> };
+  const missing = scope.WebAssembly === undefined;
+  if (missing) scope.WebAssembly = {};
+  const globals = scope.WebAssembly!;
   const saved = { Module: globals.Module, Instance: globals.Instance };
   const StandInModule = function () {} as unknown as new () => WebAssembly.Module;
   globals.Module = StandInModule;
@@ -21,6 +25,7 @@ export async function startJsReader(): Promise<void> {
   try {
     initSync({ module: new StandInModule() });
   } finally {
-    Object.assign(globals, saved);
+    if (missing) delete scope.WebAssembly;
+    else Object.assign(globals, saved);
   }
 }

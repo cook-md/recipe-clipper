@@ -66,19 +66,23 @@ struct CookFileSaver {
         guard data.count <= Self.maxBytes else { throw CookFileError.tooLarge }
 
         let temporary = directory.appendingPathComponent(".\(UUID().uuidString).cook-part")
+        // Registered before the write, so a write that fails partway leaves nothing
+        // behind. A no-op after a successful rename.
+        defer { try? FileManager.default.removeItem(at: temporary) }
         do {
             try data.write(to: temporary, options: .withoutOverwriting)
         } catch {
             throw CookFileError.io((error as NSError).domain == NSPOSIXErrorDomain ? Int32((error as NSError).code) : EIO)
         }
-        defer { try? FileManager.default.removeItem(at: temporary) } // a no-op after a successful rename
 
         for attempt in 0..<Self.maxAttempts {
             let candidate = CookFileName.candidate(name, attempt: attempt)
-            if renamex_np(temporary.path, directory.appendingPathComponent(candidate).path, UInt32(RENAME_EXCL)) == 0 {
-                return candidate
-            }
-            guard errno == EEXIST else { throw CookFileError.io(errno) }
+            let source = temporary.path
+            let target = directory.appendingPathComponent(candidate).path
+            let status = renamex_np(source, target, UInt32(RENAME_EXCL))
+            let code = errno // read before anything else can change it
+            if status == 0 { return candidate }
+            guard code == EEXIST else { throw CookFileError.io(code) }
         }
         throw CookFileError.noFreeName
     }

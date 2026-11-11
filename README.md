@@ -7,9 +7,10 @@ a [Cooklang](https://cooklang.org) `.cook` file.
 
 Version 0.1.0, not yet in the Chrome Web Store or on addons.mozilla.org.
 
-It has been run in headless Chrome and Firefox against a mock server, but not yet
-through a full manual pass on real sites. The Safari build compiles and its native file
-saving is unit-tested, but it has not yet been run in Safari.
+It has been run by hand in Chrome, Firefox and Safari 18.6 against cook.md, but not yet
+through a full manual pass on many sites. Safari 18 refuses WebAssembly in extension
+pages (WebKit bug 290153), so the Safari build also carries a plain-JavaScript
+translation of the recipe reader (`npm run reader:js`) and falls back to it.
 
 ## What it does
 

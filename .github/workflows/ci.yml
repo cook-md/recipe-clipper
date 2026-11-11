@@ -25,3 +25,10 @@ jobs:
           path: .output/*.zip
           # .output is a dot-directory, which upload-artifact skips by default.
           include-hidden-files: true
+
+  safari-file-saver:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: swift test
+        working-directory: safari/CookFileSaver

@@ -1,4 +1,6 @@
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { beforeAll, describe, expect, it } from "vitest";
 import { extractRecipe } from "@cooklang/cooklang-import";
 import { startJsReader } from "../lib/js-reader";
@@ -13,6 +15,13 @@ describe("the plain-JavaScript recipe reader", () => {
     await startJsReader();
     expect(WebAssembly.Module).toBe(real.Module);
     expect(WebAssembly.Instance).toBe(real.Instance);
+  });
+
+  it("was translated from the wasm that is installed", () => {
+    const wasm = createRequire(import.meta.url).resolve("@cooklang/cooklang-import/cooklang_import_bg.wasm");
+    const hash = createHash("sha256").update(readFileSync(wasm)).digest("hex");
+    const firstLine = readFileSync(new URL("../lib/generated/reader-asm.js", import.meta.url), "utf8").split("\n", 1)[0];
+    expect(firstLine).toBe(`// wasm sha256: ${hash}`);
   });
 
   it("reads a JSON-LD recipe", () => {

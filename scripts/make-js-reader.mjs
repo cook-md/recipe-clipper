@@ -3,7 +3,8 @@
 // fallback: Safari 18 refuses to compile WebAssembly in an extension page even with
 // 'wasm-unsafe-eval' in the policy (https://bugs.webkit.org/show_bug.cgi?id=290153).
 import { execFileSync } from "node:child_process";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,6 +14,12 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const wasm = require.resolve("@cooklang/cooklang-import/cooklang_import_bg.wasm");
 const wasm2js = join(dirname(require.resolve("binaryen/package.json")), "bin", "wasm2js");
 const out = join(root, "lib", "generated", "reader-asm.js");
+
+// The translation must come from the exact wasm that is installed: the package's
+// glue and the wasm's export names change together. The stamp on the first line
+// records which wasm it was made from (test/js-reader.test.ts checks it too).
+const stamp = `// wasm sha256: ${createHash("sha256").update(readFileSync(wasm)).digest("hex")}`;
+if (existsSync(out) && readFileSync(out, "utf8").startsWith(stamp + "\n")) process.exit(0);
 
 mkdirSync(dirname(out), { recursive: true });
 execFileSync(
@@ -43,4 +50,4 @@ function replaceOnce(source, find, replacement) {
 let source = readFileSync(out, "utf8");
 source = replaceOnce(source, "newHEAP8.set(HEAP8);", "var oldBuffer = HEAP8.buffer;\n   newHEAP8.set(HEAP8);");
 source = replaceOnce(source, "buffer = newBuffer;", "buffer = newBuffer;\n   structuredClone(oldBuffer, { transfer: [oldBuffer] });");
-writeFileSync(out, source);
+writeFileSync(out, `${stamp}\n${source}`);
