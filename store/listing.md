@@ -54,3 +54,8 @@ anything other than the conversion and the account.
 token, sign-in only). Note for the reviewer: requests from Firefox carry an
 `Origin: moz-extension://<id>` header whose id is unique to the installation; PRIVACY.md
 says so.
+
+**Screenshots:** `store/screenshots/` (1280×800, no alpha). The extension's real popup,
+captured in Chrome on a made-up recipe page and placed over a capture of that page.
+1. `1-preview.png`: the recipe found on the page, before anything is sent.
+2. `2-saved.png`: the converted Cooklang file, saved to Downloads.
