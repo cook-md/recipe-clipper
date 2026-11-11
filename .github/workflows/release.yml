@@ -5,9 +5,10 @@ name: Release
 #   - the Chrome and Firefox zips (the same files that go to the stores),
 #   - the Safari app, signed with the Developer ID certificate and notarized.
 #
-# The Safari job needs the same six secrets as cooklang/cookcli's release:
-# APPLEDEV_APPSIGNKEY_BASE64, APPLEDEV_SIGNKEY_PASS, APPLEDEV_KEY_IDENT,
-# APPLEDEV_ID_NAME, APPLEDEV_TEAM_ID, APPLEDEV_PASSWORD.
+# The Safari job uses the cook-md organization's Apple secrets, the same ones
+# sync-agent's release uses: APPLE_CERTIFICATE (base64 .p12),
+# APPLE_CERTIFICATE_PASSWORD, APPLE_SIGNING_IDENTITY, APPLE_ID, APPLE_PASSWORD,
+# APPLE_TEAM_ID.
 
 on:
   push:
@@ -56,13 +57,14 @@ jobs:
 
       - name: Sign, notarize and staple
         env:
-          APP_CERTIFICATE_BASE64: ${{ secrets.APPLEDEV_APPSIGNKEY_BASE64 }}
-          P12_PASSWORD: ${{ secrets.APPLEDEV_SIGNKEY_PASS }}
-          KEYCHAIN_PASSWORD: ${{ secrets.APPLEDEV_SIGNKEY_PASS }}
-          APPLEID_USERNAME: ${{ secrets.APPLEDEV_ID_NAME }}
-          APPLEID_TEAMID: ${{ secrets.APPLEDEV_TEAM_ID }}
-          APPLEID_PASSWORD: ${{ secrets.APPLEDEV_PASSWORD }}
-          APPLICATION_KEY_IDENT: ${{ secrets.APPLEDEV_KEY_IDENT }}
+          APP_CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE }}
+          P12_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLEID_USERNAME: ${{ secrets.APPLE_ID }}
+          APPLEID_TEAMID: ${{ secrets.APPLE_TEAM_ID }}
+          APPLEID_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLICATION_KEY_IDENT: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          # Only guards a keychain that lives for this one job.
+          KEYCHAIN_PASSWORD: actions
         run: |
           set -euo pipefail
           VERSION="${GITHUB_REF_NAME#v}"
@@ -72,13 +74,13 @@ jobs:
           APP="safari/build/Build/Products/Release/Cooklang Recipe Clipper.app"
           OUT="Cooklang-Recipe-Clipper-Safari-$VERSION.zip"
 
-          echo -n "$APP_CERTIFICATE_BASE64" | base64 --decode -o "$CERTIFICATE_PATH"
+          echo "$APP_CERTIFICATE_BASE64" | base64 --decode > "$CERTIFICATE_PATH"
           security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
           security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security import "$CERTIFICATE_PATH" -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security import "$CERTIFICATE_PATH" -P "$P12_PASSWORD" -A -f pkcs12 -k "$KEYCHAIN_PATH"
           # Lets codesign use the key without a prompt nobody can answer here.
-          security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" > /dev/null
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" > /dev/null
           security list-keychain -d user -s "$KEYCHAIN_PATH"
           xcrun notarytool store-credentials "$KEYCHAIN_ENTRY" \
             --team-id "$APPLEID_TEAMID" \

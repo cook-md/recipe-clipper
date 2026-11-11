@@ -26,10 +26,9 @@ few seconds, and a .cook file is saved to your Downloads folder.
 - The result is a plain text file on your disk, readable in any editor and usable in the
   Cooklang apps and CookCLI.
 
-Source code: https://github.com/cooklang/recipe-clipper
-(Add this line only once the repository is public.)
+Source code: https://github.com/cook-md/recipe-clipper
 
-Privacy: link to PRIVACY.md in the repository, or to https://cook.md/privacy until then.
+Privacy: https://github.com/cook-md/recipe-clipper/blob/main/PRIVACY.md
 
 **Category:** Productivity (Chrome) / Other (Firefox)
 
