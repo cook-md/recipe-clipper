@@ -189,11 +189,24 @@ export function renderView(root: HTMLElement, view: View, notice: string, handle
   if (key) root.querySelector("input")?.focus();
 }
 
+/** cook.md's deletion request page, the same one the mobile apps open. */
+const DELETE_ACCOUNT_URL = "https://cook.md/delete-my-data-request";
+
+function signedInLinks(session: Session, handlers: Handlers): HTMLElement {
+  const remove = el("a", "", "Delete account");
+  remove.href = `${DELETE_ACCOUNT_URL}?email=${encodeURIComponent(session.email)}`;
+  remove.target = "_blank";
+  remove.rel = "noopener";
+  const node = el("span", "links");
+  node.append(remove, button("Sign out", handlers.signOut, "link"));
+  return node;
+}
+
 export function renderFooter(root: HTMLElement, session: Session | null, view: View, handlers: Handlers): void {
   const left = el("span", "", session ? session.email : "Not signed in");
   const signingIn = view.kind === "sign-in-email" || view.kind === "sign-in-code";
   const right = session
-    ? button("Sign out", handlers.signOut, "link")
+    ? signedInLinks(session, handlers)
     : signingIn
       ? el("span")
       : button("Sign in for free", handlers.showSignIn, "link");

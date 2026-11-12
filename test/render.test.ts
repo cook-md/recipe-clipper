@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { renderView, type Handlers } from "../entrypoints/popup/render";
+import { renderFooter, renderView, type Handlers } from "../entrypoints/popup/render";
 
 const handlers = new Proxy({}, { get: () => vi.fn() }) as Handlers;
 let root: HTMLElement;
@@ -99,5 +99,21 @@ describe("renderView, page-derived text", () => {
 
     expect(root.querySelector("img, b, i")).toBeNull();
     expect(root.querySelector("h1")!.textContent).toBe("<img src=x onerror=alert(1)>");
+  });
+});
+
+describe("renderFooter", () => {
+  it("offers account deletion and sign-out when signed in", () => {
+    renderFooter(root, { token: "t", email: "a+b@example.com" }, { kind: "sign-in-email" }, handlers);
+    const link = root.querySelector("a")!;
+    expect(link.textContent).toBe("Delete account");
+    expect(link.href).toBe("https://cook.md/delete-my-data-request?email=a%2Bb%40example.com");
+    expect(link.target).toBe("_blank");
+    expect(labels()).toEqual(["Sign out"]);
+  });
+
+  it("has no deletion link when signed out", () => {
+    renderFooter(root, null, { kind: "sign-in-email" }, handlers);
+    expect(root.querySelector("a")).toBeNull();
   });
 });

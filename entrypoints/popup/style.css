@@ -35,6 +35,8 @@ footer {
   color: var(--muted);
   font-size: 12px;
 }
+footer .links { display: flex; gap: 12px; flex: none; }
+footer a { color: inherit; }
 h1 { margin: 0 0 8px; font-size: 17px; line-height: 1.25; }
 h2 { margin: 14px 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
 p { margin: 0 0 10px; }
