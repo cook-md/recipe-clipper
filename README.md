@@ -9,9 +9,12 @@ a [Cooklang](https://cooklang.org) `.cook` file.
 
 ## Status
 
-Version 0.1.0. Submitted to the Chrome Web Store, addons.mozilla.org and the Mac App
-Store on 2026-11-11 and waiting for review. Until they are listed, install from the
-[releases page](https://github.com/cook-md/recipe-clipper/releases).
+Version 0.1.0.
+
+- **Chrome:** [install from the Chrome Web Store](https://chromewebstore.google.com/detail/cooklang-recipe-clipper/fhiaocccadoipnppejkbaibbcoonehlo).
+- **Firefox and Safari:** submitted to addons.mozilla.org and the Mac App Store on
+  2026-11-11 and waiting for review. Until they are listed, install from the
+  [releases page](https://github.com/cook-md/recipe-clipper/releases).
 
 It has been run by hand in Chrome, Firefox and Safari 18.6 against cook.md, but not yet
 through a full manual pass on many sites. Safari 18 refuses WebAssembly in extension
